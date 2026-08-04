@@ -1,0 +1,28 @@
+<VSTemplate Version="3.0.0" xmlns="http://schemas.microsoft.com/developer/vstemplate/2005" Type="Project">
+  <TemplateData>
+    <Name>opengl_thingq</Name>
+    <Description>&lt;No description available&gt;</Description>
+    <ProjectType>VC</ProjectType>
+    <ProjectSubType>
+    </ProjectSubType>
+    <SortOrder>1000</SortOrder>
+    <CreateNewFolder>true</CreateNewFolder>
+    <DefaultName>opengl_thingq</DefaultName>
+    <ProvideDefaultName>true</ProvideDefaultName>
+    <LocationField>Enabled</LocationField>
+    <EnableLocationBrowseButton>true</EnableLocationBrowseButton>
+    <Icon>__TemplateIcon.ico</Icon>
+  </TemplateData>
+  <TemplateContent>
+    <Project TargetFileName="opengl thing.vcxproj" File="opengl thing.vcxproj" ReplaceParameters="true">
+      <ProjectItem ReplaceParameters="false" TargetFileName="$projectname$.vcxproj.filters">opengl thing.vcxproj.filters</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="glad.c">glad.c</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="try1.cpp">try1.cpp</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="camera.h">camera.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="shader.h">shader.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="stb_image.h">stb_image.h</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="fragmentshader.fs">fragmentshader.fs</ProjectItem>
+      <ProjectItem ReplaceParameters="false" TargetFileName="vertexshader.fs">vertexshader.fs</ProjectItem>
+    </Project>
+  </TemplateContent>
+</VSTemplate>
