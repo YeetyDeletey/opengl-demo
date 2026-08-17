@@ -16,10 +16,10 @@ uniform mat4 rot;
 void main()
 {
     //gl_Position = projection * view * round(model * vec4(aPos, 1.0) * 10) / 10;   //stable wobbly
-    //gl_Position = round(projection * view * model * vec4(aPos, 1.0) * 3) / 3;   //unstable wobbly
+    //gl_Position = round(projection * view * model * vec4(aPos, 1.0) * 2) / 2;   //unstable wobbly
     gl_Position = projection * view * model * vec4(aPos, 1.0);
     
-    Normal = aNormal;
+    Normal = normalize(aNormal);
     Rotation = rot;
     TexCoords = aTexCoords;
     FragPos = vec3(model * vec4(aPos, 1.0));

@@ -71,16 +71,6 @@ int main()
     //set up shader
     Shader cubeshad("cubevshad.fs", "cubefshad.fs");
     cubeshad.use();
-    cubeshad.setVec3("objColor", glm::vec3(1.0f, 0.5f, 0.31f));
-    cubeshad.setVec3("lightColor", glm::vec3(1.0f, 1.0f, 1.0f));
-    
-    cubeshad.setFloat("specular", 10);
-    cubeshad.setFloat("linear",    0.07f);
-    cubeshad.setFloat("quadratic", 0.017f);
-    cubeshad.setFloat("lightcutoff", glm::cos(glm::radians(12.5f)));
-    cubeshad.setFloat("outlightcutoff", glm::cos(glm::radians(17.5f)));
-
-
     Shader lightshad("cubevshad.fs", "lightfshad.fs");
 
     #pragma region vertices
@@ -143,9 +133,57 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
     glm::vec3 lightpos(1.0f, 1.0f, 0.0f);
+
+    glm::vec3 pointLightPositions[] = {
+        glm::vec3(0.7f,  0.2f,  2.0f),
+        glm::vec3(2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3(0.0f,  0.0f, -3.0f)
+    };
 #pragma endregion
-    cubeshad.setVec3("lightpos", lightpos);
-    //cubeshad.setVec3("lightdirection", glm::vec3( -0.2f, -1.0f, -0.3f));
+
+    #pragma region properties
+    //set up material properties
+    cubeshad.setFloat("ambient", 0.1f);
+    cubeshad.setFloat("diffuse", 1.0f);
+    cubeshad.setFloat("specular", 2.0f);
+    cubeshad.setFloat("shininess", 16);
+    //dirlight properties
+    cubeshad.setVec3("dirlight.direction", glm::vec3(-0.3f, -1.0f, -0.3f));
+    cubeshad.setVec3("dirlight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+    cubeshad.setFloat("dirlight.str", 0.2f);
+    //pointlight properties
+    cubeshad.setVec3("pointlights[0].position", pointLightPositions[0]);
+    cubeshad.setVec3("pointlights[0].color", glm::vec3(0.0f, 0.0f, 1.0f));
+    cubeshad.setFloat("pointlights[0].linear", 0.09f);
+    cubeshad.setFloat("pointlights[0].quadratic", 0.032f);
+    cubeshad.setFloat("pointlights[0].str", 1.0f);
+
+    cubeshad.setVec3("pointlights[1].position", pointLightPositions[1]);
+    cubeshad.setVec3("pointlights[1].color", glm::vec3(1.0f, 0.0f, 0.0f));
+    cubeshad.setFloat("pointlights[1].linear", 0.09f);
+    cubeshad.setFloat("pointlights[1].quadratic", 0.032f);
+    cubeshad.setFloat("pointlights[1].str", 1.0f);
+
+    cubeshad.setVec3("pointlights[2].position", pointLightPositions[2]);
+    cubeshad.setVec3("pointlights[2].color", glm::vec3(0.0f, 1.0f, 0.0f));
+    cubeshad.setFloat("pointlights[2].linear", 0.09f);
+    cubeshad.setFloat("pointlights[2].quadratic", 0.032f);
+    cubeshad.setFloat("pointlights[2].str", 1.0f);
+
+    cubeshad.setVec3("pointlights[3].position", pointLightPositions[3]);
+    cubeshad.setVec3("pointlights[3].color", glm::vec3(1.0f, 1.0f, 1.0f));
+    cubeshad.setFloat("pointlights[3].linear", 0.09f);
+    cubeshad.setFloat("pointlights[3].quadratic", 0.032f);
+    cubeshad.setFloat("pointlights[3].str", 1.0f);
+    //spotlight properties
+    cubeshad.setVec3("spotlight.color", glm::vec3(1.0f, 1.0f, 1.0f));
+    cubeshad.setFloat("spotlight.linear", 0.022f);
+    cubeshad.setFloat("spotlight.quadratic", 0.0019f);
+    cubeshad.setFloat("spotlight.inner", glm::cos(glm::radians(5.0f)));
+    cubeshad.setFloat("spotlight.outer", glm::cos(glm::radians(20.0f)));
+    cubeshad.setFloat("spotlight.str", 3.0f);
+#pragma endregion
 
     //create VBO/VAO for the cube and set them up
     unsigned int VBO, cubeVAO;   //make something to put data in
@@ -172,7 +210,7 @@ int main()
     glGenVertexArrays(1, &lightVAO);
     glBindVertexArray(lightVAO);
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     
     
@@ -249,33 +287,38 @@ int main()
         cubeshad.setMat4("view", view);
         cubeshad.setMat4("projection", projection);
 
-        //cubeshad.setVec3("lightpos", c.campos);
-        //cubeshad.setVec3("lightdirection", c.camfront);
-        //cubeshad.setFloat("lightcutoff", glm::cos(glm::radians(12.5f)));
+        cubeshad.setVec3("spotlight.position", c.campos);
+        cubeshad.setVec3("spotlight.direction", c.camfront);
 
 
         glBindVertexArray(cubeVAO);
+        //cubes
         for (unsigned int i = 0; i < 10; i++) {
             glm::mat4 model = glm::mat4(1.0f);      //model matrix (moving it within the world)
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
-            //model = glm::rotate(model, glm::radians(angle) + (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+            model = glm::rotate(model, glm::radians(angle) + (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
             cubeshad.setMat4("model", model);
-            //glm::mat4 rot = glm::mat4(1.0f);    //rotatoin tracking
-            //rot = glm::rotate(rot, glm::radians(angle) + (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
-            //cubeshad.setMat4("rot", rot);
+            glm::mat4 rot = glm::mat4(1.0f);    //rotatoin tracking
+            rot = glm::rotate(rot, glm::radians(angle) + (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+            cubeshad.setMat4("rot", rot);
 
             cubeshad.use();
             glDrawArrays(GL_TRIANGLES, 0, 36);
-        }
+        }   
+
+        //lights
         lightshad.use();
+        glBindVertexArray(lightVAO);
         lightshad.setMat4("view", view);
         lightshad.setMat4("projection", projection);
-        glm::mat4 model = glm::mat4(1.0f);
-        model = glm::translate(model, lightpos);
-        model = glm::scale(model, glm::vec3(0.2));
-        lightshad.setMat4("model", model);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        for (int i = 0; i < 4; i++) {
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, pointLightPositions[i]);
+            model = glm::scale(model, glm::vec3(0.2));
+            lightshad.setMat4("model", model);
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
         
 
         //check and call events and swap the buffers
